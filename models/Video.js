@@ -4,7 +4,10 @@ const VideoSchema = mongoose.Schema({
     id_usuario:{
         type:String,
         required:true
-
+    },
+    id_video:{
+        type:String,
+        required:true
     },
 
 });

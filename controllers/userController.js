@@ -18,11 +18,12 @@ exports.addUser = async(req,res) =>{
 
 // OBTENER USUARIO POR ID
 exports.getUserById = async(req,res) => {
-    const userId = req.body.id;
+    const userId = req.body._id;
     try{
+
         const usuarios = await User.findById(userId);
         if (!usuarios) {
-        console.log("lead no encontrado")
+        console.log(userId,"lead no encontrado")
         res.json(null);
         }
         res.json(usuarios.username);
@@ -50,23 +51,4 @@ exports.authUser = async(req,res)=> {
         res.status(500).send('Hubo un error');
     }
 }
-
-
-
-// OBTENER UN USUARIO
-exports.getUser = async (req, res) => {
-    try {
-        const palabra = req.query.palabra; 
-
-        const user = await UserModel.findOne({ nombre: palabra });
-        if (!user) {
-            return res.status(404).json({ error: 'Usuario no encontrado' });
-        }
-
-        res.status(200).json(user);
-    } catch (error) {
-        console.error('Error al obtener usuario:', error);
-        res.status(500).json({ error: 'Error al obtener usuario' });
-    }
-};
 
