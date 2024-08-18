@@ -1,6 +1,8 @@
 
 // controllers/videoController.js
 const Video = require('../models/Video');
+const User = require('../models/User');
+const mongoose = require("mongoose");
 
 // CREATE
 exports.likeVideo = async (req, res) => {
@@ -46,3 +48,25 @@ exports.dislikeVideo = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+exports.getLikedVideos = async (req,res)=>{
+    try {
+        const userId = req.params.userId;
+        // const objectId = new mongoose.Types.ObjectId(userId);
+
+        // Verificar si el usuario existe
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // Buscar videos que pertenezcan al usuario
+        const videos = await Video.find({ id_usuario: userId });
+
+        res.json(videos);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+}

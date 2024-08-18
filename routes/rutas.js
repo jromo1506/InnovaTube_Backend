@@ -11,6 +11,7 @@ router.post('/getUser',userController.getUserById);
 
 router.post('/likeVideo',videoController.likeVideo);
 router.post('/dislikeVideo',videoController.dislikeVideo);
+router.get('/getVideos/:userId',videoController.getLikedVideos);
 
 
 
