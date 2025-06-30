@@ -6,6 +6,7 @@ const videoController = require('../controllers/videoController');
 router.post('/addUser',userController.addUser);
 router.post('/authUser',userController.authUser);
 router.post('/getUser',userController.getUserById);
+router.get('/getUsers',userController.getAllUsers);
 
 router.post('/forgotPasswordEmail',userController.forgotPasswordEmail);
 router.get('/resetPassword/:token',userController.resetPassword);

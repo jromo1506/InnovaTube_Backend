@@ -22,6 +22,16 @@ exports.addUser = async (req, res) => {
   }
 }
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('-password -resetPwdToken -resetPwdExpires');
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al obtener usuarios');
+  }
+};
+
 
 
 // OBTENER USUARIO POR ID
