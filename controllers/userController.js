@@ -1,20 +1,25 @@
 const User = require("../models/User");
 const crypto = require('crypto');
 const emailService = require('../services/nodemailer');
-
+const bcrypt = require('bcrypt');
 
 // ALTAS USUARIOS
-exports.addUser = async(req,res) =>{
-    try{
-        let user;
-        user = new User(req.body);
-        await user.save();
-        res.send(user);
-    }
-    catch(error){
-        console.log(error);
-        console.log("Hubo un problema");
-    }
+
+exports.addUser = async (req, res) => {
+  try {
+    console.log("GUARDAR");
+    const { username, password } = req.body;
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = new User({ username, password: hashedPassword });
+    await user.save();
+    res.send(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Hubo un problema");
+  }
 }
 
 
@@ -37,25 +42,25 @@ exports.getUserById = async(req,res) => {
 }
 
 // AUTENTICAR UN USUARIO
-exports.authUser = async(req,res)=> {
-    const {username,password} = req.body;
-    try{
-        const user = await User.findOne({username,password});
-        if(!user){
-            res.status(404).json({msg:'No existe el usuario'});
-        }
-        else{
-            res.json(user)
-        }
-        
-    } 
-    catch(error){
-        console.log(error);
-        res.status(500).send('Hubo un error');
+exports.authUser = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuario no encontrado' });
     }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(401).json({ msg: 'Contraseña incorrecta' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Hubo un error');
+  }
 }
-
-
 // Enviar email reset password
 exports.forgotPasswordEmail = async(req,res)=>{
     const { email } = req.body;
